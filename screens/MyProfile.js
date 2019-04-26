@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, ScrollView } f
 import { Header } from 'react-navigation';
 
 import ScreenContainer from '../components/ScreenContainer';
-import ScrollableView  from '../components/ScrollableView';
+import MainHeader      from '../components/MainHeader';
 
 export default class MyProfile extends React.Component {
   static navigationOptions = {
@@ -12,12 +12,13 @@ export default class MyProfile extends React.Component {
 
   render() {
     return (
-      <ScreenContainer contentContainerStyle={{borderWidth: 4, borderColor: '#3F3'}}>
-          <View style={{flex: 1, backgroundColor: '#333'}} />
-          <View style={{flex: 1, backgroundColor: '#666'}} />
-          <View style={{flex: 1, backgroundColor: '#999'}} />
-          <TextInput placeholder="Texto 9"/>
-          <View style={{height: 15, width: '100%', backgroundColor: '#999'}} />
+      <ScreenContainer>
+        <MainHeader navigation={this.props.navigation} />
+        <View style={{flex: 1, backgroundColor: '#333'}} />
+        <View style={{flex: 1, backgroundColor: '#666'}} />
+        <View style={{flex: 1, backgroundColor: '#999'}} />
+        <TextInput placeholder="Texto 9"/>
+        <View style={{height: 15, width: '100%', backgroundColor: '#999'}} />
       </ScreenContainer> 
     );
   };
