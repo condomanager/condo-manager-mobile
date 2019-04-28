@@ -1,33 +1,17 @@
-import React, { Component }                          from 'react';
-import { createAppContainer, createDrawerNavigator } from 'react-navigation';
+import React, { Component }           from 'react';
 
-import ScreenContainer from './components/ScreenContainer';
-import MyProfile       from './screens/MyProfile';
-import MyVisits        from './screens/MyVisits';
-import Whitelist       from './screens/Whitelist';
+import { createCustomStackNavigator } from 'components/Navigator';
 
-const MainDrawerNavigator = createDrawerNavigator({  
-  MyProfile: {
-    screen: MyProfile,
-  },
-  MyVisits: {
-    screen: MyVisits,
-  },
-  Whitelist: {
-    screen: Whitelist,
-  },
-});
-const MainDrawerNavigatorContainer = createAppContainer(MainDrawerNavigator);
+import Login from 'screens/login/';
+import Home  from 'screens/home/';
 
-export default MainDrawerNavigatorContainer;
-/*
-export default class App extends React.Component {
-  render() {
-    return (
-      <ScreenContainer>
-        <MainDrawerNavigatorContainer />
-      </ScreenContainer>
-    );
-  }
+const navigatorRoutes = {
+  Login: { screen: Login },
+  Home:  { screen: Home },
 };
-*/
+
+const navigatorConfig = {
+  defaultNavigationOptions: { header: null },
+};
+
+export default createCustomStackNavigator(navigatorRoutes, navigatorConfig);

@@ -1,20 +1,20 @@
-import React, { Component }                            from 'react';
-import { StyleSheet, KeyboardAvoidingView, StatusBar } from 'react-native';
-import { SafeAreaView }                                from 'react-navigation';
+import React, { Component }                                                     from 'react';
+import { StyleSheet, View, KeyboardAvoidingView, StatusBar, ActivityIndicator } from 'react-native';
+import { SafeAreaView }                                                         from 'react-navigation';
 
 import ScrollableView from './ScrollableView';
+
+import Colors from 'utils/Colors';
 
 export default class ScreenContainer extends React.Component {
   static defaultProps = {
     scrollable: true,
-    background: true,
+    loading:    false,
   };
 
   render() {
-    const { style, forceInset, scrollable, contentContainerStyle, ...containerViewProps } = this.props;
+    const { style, scrollable, contentContainerStyle, loading, ...containerViewProps } = this.props;
     let contentStyle = contentContainerStyle;
-
-    const defaultInset = { bottom: 'never' };
     
     return (
       <KeyboardAvoidingView behavior="padding" style={[styles.flexContainer, style, styles.mainContainer]}>
@@ -29,6 +29,13 @@ export default class ScreenContainer extends React.Component {
         {!scrollable && (
           <View style={[styles.flexContainer, styles.contentContainer, contentStyle]} {...containerViewProps}>
             {this.props.children}
+          </View>
+        )}
+
+        {loading && (
+          <View style={styles.loadingOverlay}>
+            <View style={styles.loadingOverlayBackground} />
+            <ActivityIndicator size="large" color={Colors.WHITE} />
           </View>
         )}
       </KeyboardAvoidingView>
@@ -48,5 +55,17 @@ const styles = StyleSheet.create({
 
   contentContainer: {
     backgroundColor: '#FFF',
+  },
+
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loadingOverlayBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.PRIMARY,
+    opacity: 0.85,
   },
 });

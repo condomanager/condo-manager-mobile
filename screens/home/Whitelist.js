@@ -1,7 +1,7 @@
 import React, { Component }       from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import ScreenContainer from '../components/ScreenContainer';
+import ScreenContainer from 'components/ScreenContainer';
 
 export default class Whitelist extends React.Component {
   static navigationOptions = {
