@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 6486,
+  "expoServerNgrokUrl": "https://z5-6eh.anonymous.condo-manager-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.z5-6eh.anonymous.condo-manager-mobile.exp.direct",
+  "ngrokPid": 6502,
   "webpackServerPort": null
 }

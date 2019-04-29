@@ -1,6 +1,6 @@
-import React, { Component }                                                     from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, StatusBar, ActivityIndicator } from 'react-native';
-import { SafeAreaView }                                                         from 'react-navigation';
+import React, { Component }                                                           from 'react';
+import { StyleSheet, View, KeyboardAvoidingView, StatusBar, ActivityIndicator, Text } from 'react-native';
+import { SafeAreaView }                                                               from 'react-navigation';
 
 import ScrollableView from './ScrollableView';
 
@@ -13,7 +13,7 @@ export default class ScreenContainer extends React.Component {
   };
 
   render() {
-    const { style, scrollable, contentContainerStyle, loading, ...containerViewProps } = this.props;
+    const { style, scrollable, contentContainerStyle, loading, loadingMessage, ...containerViewProps } = this.props;
     let contentStyle = contentContainerStyle;
     
     return (
@@ -36,6 +36,7 @@ export default class ScreenContainer extends React.Component {
           <View style={styles.loadingOverlay}>
             <View style={styles.loadingOverlayBackground} />
             <ActivityIndicator size="large" color={Colors.WHITE} />
+            {loadingMessage && loadingMessage.trim() && <Text style={styles.loadingMessage}>{loadingMessage}</Text>}
           </View>
         )}
       </KeyboardAvoidingView>
@@ -68,4 +69,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.PRIMARY,
     opacity: 0.85,
   },
+
+  loadingMessage: {
+    color: Colors.WHITE,
+    textAlign: 'center',
+    marginVertical: 24,
+    marginHorizontal: 32,
+  }
 });

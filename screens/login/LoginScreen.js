@@ -16,17 +16,19 @@ export default class LoginScreen extends React.Component {
     super(props);
 
     this.state = {
-      credentials: {},
-      error:       undefined,
+      credentials:    {},
+      loading:        false,
+      loadingMessage: undefined,
+      error:          undefined,
     };
   };
 
   attemptAuthentication = () => {
     const { credentials } = this.state;
 
-    this.setState({ loading: true, error: undefined });
+    this.setState({ error: undefined, loading: true, loadingMessage: 'Autenticando, aguarde...'});
 
-    AuthenticationService.login(credentials).then((token) => {
+    AuthenticationService.getInstance().login(credentials).then(token => {
       if (token) {
         this.setState({ loading: false });
         this.props.navigation.navigate('Home');
@@ -41,12 +43,12 @@ export default class LoginScreen extends React.Component {
   };
 
   render() {
-    const { loading, error, credentials } = this.state;
+    const { loading, loadingMessage, error, credentials } = this.state;
 
     return (
-      <ScreenContainer loading={loading} contentContainerStyle={styles.container}>
+      <ScreenContainer loading={loading} loadingMessage={loadingMessage} contentContainerStyle={styles.container}>
         
-        {error && <Text style={styles.error}>{error.title}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
         <InputText 
           style={styles.inputContainer}
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
   error: {
     color: Colors.WHITE,
     opacity: 0.5,
+    marginBottom: 16,
   },
 
   inputContainer: {

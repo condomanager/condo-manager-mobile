@@ -15,12 +15,11 @@ export function createCustomDrawerNavigator (navigatorRoutes, navigatorConfig = 
 
   const contentComponent = (props) => {
     attemptLogout = () => {
-      AuthenticationService.logout().then(() => {
+      AuthenticationService.getInstance().logout()
+      .then(() => {
         props.navigation.navigate('Login');
-        console.log('LOGOUT SUCCESS');
       }).catch((error) => { 
         console.log('LOGOUT ERROR', error);
-        props.navigation.navigate('Login');
       });
     };
 

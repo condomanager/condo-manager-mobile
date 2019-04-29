@@ -1,15 +1,15 @@
 import React, { Component }       from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-import Colors              from 'utils/Colors';
-import ScreenContainer     from 'components/ScreenContainer';
-import AsyncStorageService from 'services/AsyncStorageService';
+import Colors                from 'utils/Colors';
+import ScreenContainer       from 'components/ScreenContainer';
+import AuthenticationService from 'services/AuthenticationService';
 
 export default class LoadingScreen extends React.Component {
 
   async componentDidMount() {
-    AsyncStorageService.get('authenticationToken').then((token, error) => {
-      console.log('LOADING SCREEN', token, error);
+    AuthenticationService.getInstance().getAuthenticationToken().then(token => {
+      console.log('====== Loading APP, token: ', token);
       if (token)
         this.props.navigation.navigate('Home');
       else

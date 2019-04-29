@@ -25,5 +25,8 @@
     "ios": {
       "supportsTablet": true
     }
+  }, 
+  "api": {
+    "host": "http://192.168.25.19:8989"
   }
 }

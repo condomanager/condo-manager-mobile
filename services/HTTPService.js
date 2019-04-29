@@ -1,38 +1,88 @@
 import AsyncStorageService from './AsyncStorageService';
 
-export default class HTTPService {
-  static API_HOST = 'http://192.168.25.19:8989';
+const API_HOST = require('../app.json').api.host;
 
-  static requestConfig(httpMethod, token) {
+export default class HTTPService {
+  static _instance;
+
+  static getInstance() {
+    if (!HTTPService._instance)
+      HTTPService._instance = new HTTPService();
+
+    return this._instance;
+  };
+
+  getAPIHost = () => {
+    return API_HOST;
+  };
+
+  getRequestConfig = (httpMethod) => {
     let config = {
       method: httpMethod,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-      }
+      },
     };
 
-    if (token)
-      config.headers.Authorization = 'Bearer ' + token;
+    if (this.token)
+      config.headers['Authorization'] = 'Bearer ' + this.token;
 
     return config;
   };
 
-  static loadProfile() {
-    const endpoint      = HTTPService.API_HOST + '/profiles/my-profile';
-    const requestConfig = HTTPService.requestConfig('GET');
+  _prepareRequest = (method, endpoint, body) => {
+    const requestURL    = (this.getAPIHost() + endpoint);
+    const requestConfig = this.getRequestConfig(method);
 
-    return fetch(endpoint, requestConfig)
-      .then((response) => response.json());
+    if (body)
+      requestConfig.body = JSON.stringify(body);
+
+    console.info('====== HTTPService prepared request:', {requestURL, ...requestConfig});
+
+    return {requestURL, requestConfig};
   };
 
-  static saveProfile(profile) {
-    if (!profile.phones)
-      profile.phones = [];
-    
-    const endpoint      = HTTPService.API_HOST + '/profiles/my-profile';
-    const requestConfig = {...(HTTPService.requestConfig('PUT')), body: JSON.stringify(profile)};
-
-    return fetch(endpoint, requestConfig).then((response) => response.json());
+  _executeRequest = (url, config) => {
+    return fetch(url, config).then((requestResponse) => {
+      console.info('====== HTTPService raw response:', requestResponse);
+      if (requestResponse.status >= 500)
+        throw 'Ocorreu um problema durante o processo de autenticação';
+      return requestResponse.json();
+    });
   };
+
+  GET = (endpoint) => {
+    const { requestURL, requestConfig } = this._prepareRequest('GET', endpoint);
+
+    if (endpoint == '/my-profile')
+      return new Promise((resolve, reject) => resolve({ name: 'Fake User', cpf: '00000000000' }));
+
+    return this._executeRequest(requestURL, requestConfig);
+  };
+
+  POST = (endpoint, body) => {
+    const { requestURL, requestConfig } = this._prepareRequest('POST', endpoint, body);
+
+    if (endpoint == '/login')
+      return new Promise((resolve, reject) => resolve({ token: 'fake-token' }));
+
+    return this._executeRequest(requestURL, requestConfig);
+  };
+
+  PUT = (endpoint, body) => {
+    const { requestURL, requestConfig } = this._prepareRequest('PUT', endpoint, body);
+
+    if (endpoint == '/logout')
+      return new Promise((resolve, reject) => resolve());
+
+    return this._executeRequest(requestURL, requestConfig);
+  };
+
+  DELETE = (endpoint, body) => {
+    const { requestURL, requestConfig } = this._prepareRequest('DELETE', endpoint, body);
+
+    return this._executeRequest(requestURL, requestConfig);
+  };
+
 };

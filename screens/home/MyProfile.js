@@ -8,6 +8,7 @@ import ProfilePicture  from 'components/ProfilePicture';
 import InputText       from 'components/InputText';
 
 import HTTPService     from 'services/HTTPService';
+import ProfileService  from 'services/ProfileService';
 
 export default class MyProfile extends React.Component {
   static navigationOptions = {
@@ -24,10 +25,10 @@ export default class MyProfile extends React.Component {
   };
 
   componentDidMount() {
-    return HTTPService.loadProfile().then((responseJson) => {
+    ProfileService.getInstance().getProfile().then(response => {
       this.setState({
         isLoading: false,
-        profile: responseJson,
+        profile: response,
       });
     }).catch((error) =>{
       console.error('ERROR:', error);
