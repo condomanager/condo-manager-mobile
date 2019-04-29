@@ -47,10 +47,11 @@ export default class CreateProfileScreen extends React.Component {
         {error && <Text style={styles.error}>{error.title}</Text>}
 
         <InputText 
-          style={styles.inputContainer}
-          inputStyle={styles.input}
-          textContentType="name"
-          placeholder="Informe seu name" 
+          style={styles.inputContainer} 
+          inputStyle={styles.input} 
+          textContentType="name" 
+          leftIcon="user" 
+          placeholder="Informe o seu nome" 
           value={profile.name}
           onChangeText={(text) => this.setState(state => {
             state.profile.name = text;
@@ -63,8 +64,9 @@ export default class CreateProfileScreen extends React.Component {
           inputStyle={styles.input}
           textContentType="username"
           keyboardType="number-pad" 
-          maxLength={11}
-          placeholder="Informe seu CPF" 
+          maxLength={11} 
+          leftIcon="id-card" 
+          placeholder="Informe o seu CPF" 
           value={profile.username}
           onChangeText={(text) => this.setState(state => {
             state.profile.username = text;
@@ -77,7 +79,8 @@ export default class CreateProfileScreen extends React.Component {
           inputStyle={styles.input} 
           textContentType="password" 
           secureTextEntry={true} 
-          placeholder="Informe sua senha" 
+          leftIcon="lock" 
+          placeholder="Informe a sua senha" 
           value={profile.password}
           onChangeText={(text) => this.setState(state => {
             state.profile.password = text;
