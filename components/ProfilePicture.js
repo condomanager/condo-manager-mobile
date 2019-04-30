@@ -1,6 +1,10 @@
 import React, { Component }        from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
+import Colors from 'utils/Colors';
+
 export default class InputText extends React.Component {
   static defaultProps = {
     size: 100,
@@ -16,7 +20,8 @@ export default class InputText extends React.Component {
 
     return (
       <View style={[styles.container, style, sizeStyle, borderStyle]} {...otherProps}>
-        <Image source={require('./generic-profile-picture.png')} style={sizeStyle} />
+        {/*<Image source={require('./generic-profile-picture.png')} style={sizeStyle} />*/}
+        <FontAwesomeIcon size={optimalSize} icon="user" color={Colors.LIGHT_TEXT} />
       </View> 
     );
   };
@@ -24,8 +29,10 @@ export default class InputText extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#EFEFEF',
-    borderColor: '#CCC',
+    backgroundColor: Colors.WHITE,
+    borderColor: Colors.LIGHT_TEXT,
+    alignItems: 'center',
+    justifyContent: 'center',
     overflow: 'hidden',
   },
 });

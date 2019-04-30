@@ -17,7 +17,7 @@ export default class AuthenticationService {
 
   clear = () => {
     return AsyncStorage.removeItem('authenticationToken').then(asyncStorageError => {
-      this._profile = undefined;
+      this._authenticationToken = undefined;
       return new Promise((resolve, reject) => resolve());
     });
   };

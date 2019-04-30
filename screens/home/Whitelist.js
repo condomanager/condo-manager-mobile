@@ -1,28 +1,47 @@
 import React, { Component }       from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
-import ScreenContainer from 'components/ScreenContainer';
+import ScreenContainer   from 'components/ScreenContainer';
+import MainHeader        from 'components/MainHeader';
+import { PrimaryButton } from 'components/Button';
 
-export default class Whitelist extends React.Component {
-  static navigationOptions = {
-    drawerLabel: 'Authorizações de entrada',
+export default class MyWhitelist extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state ={ 
+      loading: true,
+      visits:  [],
+    };
   };
 
+  componentDidMount() {
+    this.setState({
+      loading: false,
+    });
+  };
+
+  addWhitelisted = () => {};
+
   render() {
+    const { loading, visits }  = this.state;
+    const { navigation }       = this.props;
+
     return (
-      <ScreenContainer>
-        <View style={{flex: 1, borderWidth: 4, borderColor: '#F33'}}>
-          <View style={{height: 20, width: '100%', backgroundColor: '#333'}} />
-          <View style={{height: 20, width: '100%', backgroundColor: '#666'}} />
-          <View style={{height: 20, width: '100%', backgroundColor: '#999'}} />
-          <Text>Lista das visitas com entrada previamente autorizada</Text>
+      <ScreenContainer loading={loading} stickyHeaderIndices={[0]}>
+        <MainHeader navigation={navigation} title="Autorizações de visita" rightIcon="plus-circle" onPressRightIcon={this.addWhitelisted} />
+
+        <View style={styles.container}>
+          <Text>Lista de autorizações de visita</Text>
         </View>
-      </ScreenContainer>
+      </ScreenContainer> 
     );
   };
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    padding: 24,
   },
 });

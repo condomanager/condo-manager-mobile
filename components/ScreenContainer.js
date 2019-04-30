@@ -2,7 +2,7 @@ import React, { Component }                                                     
 import { StyleSheet, View, KeyboardAvoidingView, StatusBar, ActivityIndicator, Text } from 'react-native';
 import { SafeAreaView }                                                               from 'react-navigation';
 
-import ScrollableView from './ScrollableView';
+import ScrollableView from 'components/ScrollableView';
 
 import Colors from 'utils/Colors';
 

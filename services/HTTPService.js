@@ -75,6 +75,8 @@ export default class HTTPService {
 
     if (endpoint == '/logout')
       return new Promise((resolve, reject) => resolve());
+    if (endpoint == '/my-profile')
+      return new Promise((resolve, reject) => resolve({...body, edited: true}));
 
     return this._executeRequest(requestURL, requestConfig);
   };

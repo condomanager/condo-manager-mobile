@@ -1,13 +1,17 @@
 import React, { Component }       from 'react';
-import { StyleSheet, View, ActivityIndicator, Button } from 'react-native';
-import { Header } from 'react-navigation';
+import { StyleSheet, View, Text } from 'react-native';
 
-import ScreenContainer   from 'components/ScreenContainer';
-import ProfilePicture    from 'components/ProfilePicture';
-import InputText         from 'components/InputText';
-import { PrimaryButton } from 'components/Button';
+import ScreenContainer                        from 'components/ScreenContainer';
+import MainHeader                             from 'components/MainHeader';
+import ProfilePicture                         from 'components/ProfilePicture';
+import Separator                              from 'components/Separator';
+import InputText                              from 'components/InputText';
+import { PrimaryButton, SecondaryIconButton } from 'components/Button';
+import { PrimaryLink }                        from 'components/Link';
 
 import ProfileService  from 'services/ProfileService';
+
+import Colors from 'utils/Colors';
 
 export default class MyProfile extends React.Component {
   static navigationOptions = {
@@ -19,18 +23,41 @@ export default class MyProfile extends React.Component {
 
     this.state ={ 
       loading: true,
-      profile: {},
+      profile: {
+        phones: [{number: undefined}],
+      },
     };
   };
 
   componentDidMount() {
-    ProfileService.getInstance().getProfile().then(response => {
-      this.setState({
-        loading: false,
-        profile: response,
-      });
-    }).catch((error) =>{
+    ProfileService.getInstance().getProfile()
+    .then(this.setProfile)
+    .catch((error) =>{
       console.error('ERROR:', error);
+    });
+  };
+
+  setProfile = (profile) => {
+    if (profile && !profile.phones)
+      profile.phones = [{number: undefined}];
+
+    this.setState({
+      loading: false,
+      profile: profile,
+    });
+  };
+
+  addPhone = () => {
+    this.setState(state => {
+      state.profile.phones.push({});
+      return state;
+    });
+  };
+
+  removePhone = (index) => {
+    this.setState(state => {
+      state.profile.phones.splice(index, 1);
+      return state;
     });
   };
 
@@ -40,58 +67,92 @@ export default class MyProfile extends React.Component {
     this.setState({
       loading: true,
     });
+
+    ProfileService.getInstance().updateProfile(profile)
+    .then(this.setProfile)
+    .catch((error) =>{
+      console.error('ERROR:', error);
+    });
   };
 
   render() {
     const { loading, profile } = this.state;
+    const { navigation }       = this.props;
 
     return (
-      <ScreenContainer loading={loading} contentContainerStyle={styles.container}>
-        <View style={styles.profilePictureContainer}>
-          <ProfilePicture size={200} />
+      <ScreenContainer loading={loading} stickyHeaderIndices={[0]}>
+        <MainHeader navigation={navigation} title="Meus dados" />
+
+        <View style={styles.container}>
+          <View style={styles.profilePictureContainer}>
+            <ProfilePicture />
+          </View>
+
+          <InputText 
+            style={styles.input}
+            textContentType="name" 
+            label="Nome" 
+            leftIcon="user"
+            placeholder="Informe seu nome" 
+            value={profile.name}
+            onChangeText={(text) => this.setState(state => {
+              state.profile.name = text;
+              return state;
+            })}
+          />
+          
+          <InputText 
+            style={styles.input}
+            keyboardType="number-pad" 
+            label="CPF" 
+            leftIcon="id-card" 
+            placeholder="Informe seu CPF" 
+            value={profile.cpf}
+            onChangeText={(text) => this.setState(state => {
+              state.profile.cpf = text;
+              return state;
+            })}
+          />
+
+          <Separator text="DADOS DE CONTATO" style={styles.input} />
+
+          <InputText 
+            style={styles.input}
+            textContentType="emailAddress" 
+            keyboardType="email-address" 
+            label="Endereço de e-mail" 
+            leftIcon="at"
+            placeholder="Informe o seu e-mail" 
+            value={profile.email}
+            onChangeText={(text) => this.setState(state => {
+              state.profile.email = text;
+              return state;
+            })}
+          />
+
+          {profile.phones.map((phone, index) => {
+            return <View style={[styles.phoneContainer, styles.input]} key={index}>
+              <InputText 
+                style={styles.phoneInput}
+                textContentType="telephoneNumber" 
+                keyboardType="number-pad" 
+                label={'Telefone para contato ' + (index + 1)} 
+                leftIcon="phone"
+                placeholder="Informe o número do telefone" 
+                value={phone.number}
+                onChangeText={(text) => this.setState(state => {
+                  phone.number = text;
+                  return state;
+                })}
+              />
+              <SecondaryIconButton icon="trash-alt" style={styles.deleteButton} onPress={() => this.removePhone(index)} /> 
+            </View>
+          })}
+
+          <PrimaryLink text="Adicionar outro telefone" style={styles.input} onPress={() => this.addPhone()} /> 
+
+          <PrimaryButton title="Salvar" onPress={this.save} />
         </View>
-
-        <InputText 
-          style={styles.inputContainer}
-          textContentType="name" 
-          label="Nome" 
-          leftIcon="user"
-          placeholder="Informe seu nome" 
-          value={profile.name}
-          onChangeText={(text) => this.setState(state => {
-            state.profile.name = text;
-            return state;
-          })}
-        />
-        
-        <InputText 
-          style={styles.inputContainer}
-          textContentType="emailAddress" 
-          keyboardType="email-address" 
-          label="Endereço de e-mail" 
-          leftIcon="at"
-          placeholder="Informe seu e-mail" 
-          value={profile.email}
-          onChangeText={(text) => this.setState(state => {
-            state.profile.email = text;
-            return state;
-          })}
-        />
-        
-        <InputText 
-          style={styles.inputContainer}
-          keyboardType="number-pad" 
-          label="CPF" 
-          leftIcon="id-card" 
-          placeholder="Informe seu CPF" 
-          value={profile.cpf}
-          onChangeText={(text) => this.setState(state => {
-            state.profile.cpf = text;
-            return state;
-          })}
-        />
-
-        <PrimaryButton title="Salvar" onPress={this.save} />
       </ScreenContainer> 
     );
   };
@@ -99,17 +160,35 @@ export default class MyProfile extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 24,
   },
 
   profilePictureContainer: {
     alignSelf: 'stretch',
-    padding: 8,
+    padding: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 24,
   },
 
-  inputContainer: {
+  input: {
     marginBottom: 24,
+  },
+
+  phoneInput: {
+    flex: 1,
+    marginRight: 12
+  },
+
+  phoneContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+
+  deleteButton: {
+    borderWidth: 1,
+    borderColor: Colors.PRIMARY,
   },
 });

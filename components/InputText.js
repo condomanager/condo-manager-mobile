@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 14,
-    color: '#CCC',
+    color: Colors.LIGHT_TEXT,
   },
 
   inputContainer: {
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
     borderWidth: 1,
-    borderColor: '#CCC',
-    borderRadius: 4,
+    borderColor: Colors.LIGHT_TEXT,
+    borderRadius: 8,
     backgroundColor: Colors.WHITE,
     overflow: 'hidden',
   },
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#666',
+    color: Colors.DEFAULT_TEXT,
   },
 
   leftIcon: {

@@ -2,8 +2,7 @@ import React, { Component }                                                     
 import { StyleSheet, View }                                                             from 'react-native';
 import { createAppContainer, createStackNavigator, createDrawerNavigator, DrawerItems } from 'react-navigation';
 
-import ScreenContainer       from 'components/ScreenContainer';
-import { PrimaryButton }     from 'components/Button';
+import Menu                  from 'components/Menu';
 import AuthenticationService from 'services/AuthenticationService';
 
 export function createCustomStackNavigator (navigatorRoutes, navigatorConfig) {
@@ -13,25 +12,7 @@ export function createCustomStackNavigator (navigatorRoutes, navigatorConfig) {
 
 export function createCustomDrawerNavigator (navigatorRoutes, navigatorConfig = {}) {
 
-  const contentComponent = (props) => {
-    attemptLogout = () => {
-      AuthenticationService.getInstance().logout()
-      .then(() => {
-        props.navigation.navigate('Login');
-      }).catch((error) => { 
-        console.log('LOGOUT ERROR', error);
-      });
-    };
-
-    return (
-      <ScreenContainer>
-        <View style={styles.itemsContainer}>
-          <DrawerItems {...props} />
-        </View>
-        <PrimaryButton title="Sair" style={styles.button} onPress={attemptLogout} />
-      </ScreenContainer>
-    );
-  };
+  const contentComponent = (props) => <Menu navigation={props.navigation} />;
 
   const Navigator = createDrawerNavigator(navigatorRoutes, { contentComponent, ...navigatorConfig });
   return createAppContainer(Navigator);

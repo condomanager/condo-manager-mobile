@@ -1,13 +1,17 @@
 import React, { Component }       from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { NavigationEvents }       from 'react-navigation';
 
-import Colors                from 'utils/Colors';
 import ScreenContainer       from 'components/ScreenContainer';
 import AuthenticationService from 'services/AuthenticationService';
 
+import Colors                from 'utils/Colors';
+
 export default class LoadingScreen extends React.Component {
 
-  async componentDidMount() {
+  focusHandler = () => {
+    console.log('LOADING SCREEN DID FOCUS!');
+
     AuthenticationService.getInstance().getAuthenticationToken().then(token => {
       console.log('====== Loading APP, token: ', token);
       if (token)
@@ -19,7 +23,9 @@ export default class LoadingScreen extends React.Component {
 
   render() {
     return (
-      <ScreenContainer loading={true} contentContainerStyle={styles.container} />
+      <ScreenContainer loading={true} contentContainerStyle={styles.container}>
+        <NavigationEvents onDidFocus={this.focusHandler} />
+      </ScreenContainer>
     );
   };
 };

@@ -1,7 +1,8 @@
 import { AsyncStorage } from "react-native";
+import EventEmitter     from 'EventEmitter';
 import HTTPService      from './HTTPService';
 
-export default class ProfileService {
+export default class ProfileService extends EventEmitter {
   static _instance;
 
   static _profile;
@@ -11,6 +12,13 @@ export default class ProfileService {
       ProfileService._instance = new ProfileService();
 
     return this._instance;
+  };
+
+  _changeProfile = (profile) => {
+    if(profile !== this._profile) {
+      this._profile = profile;
+      this.emit('change', this._profile);
+    }
   };
 
   clear = () => {
@@ -27,7 +35,7 @@ export default class ProfileService {
       return AsyncStorage.getItem('profile').then(profile => {
         if (profile) {
           console.info('=== ProfileService.getProfile found from AsyncStorage, parsing and returning...')
-          this._profile = JSON.parse(profile);
+          this._changeProfile(JSON.parse(profile));
           return new Promise((resolve, reject) => resolve(this._profile));
         } else {
           console.info('=== ProfileService.getProfile not found from AsyncStorage, redirecting to ProfileService.loadProfile...')
@@ -45,10 +53,23 @@ export default class ProfileService {
     return HTTPService.getInstance().GET('/my-profile')
     .then(responseBody => {
       console.info('=== ProfileService.loadProfile got from server, storing locally and on AsyncStorage...');
-      this._profile = responseBody;
+      this._changeProfile(responseBody);
       return AsyncStorage.setItem('profile', JSON.stringify(this._profile));
     }).then(asyncStorageError => {
       console.info('=== ProfileService.loadProfile stored, returning...');
+      return new Promise((resolve, reject) => resolve(this._profile));
+    });
+  };
+  
+  updateProfile = (profile) => {
+    console.info('=== ProfileService.updateProfile...');
+    return HTTPService.getInstance().PUT('/my-profile', profile)
+    .then(responseBody => {
+      console.info('=== ProfileService.updateProfile got from server, storing locally and on AsyncStorage...');
+      this._changeProfile(responseBody);
+      return AsyncStorage.setItem('profile', JSON.stringify(this._profile));
+    }).then(asyncStorageError => {
+      console.info('=== ProfileService.updateProfile stored, returning...');
       return new Promise((resolve, reject) => resolve(this._profile));
     });
   };

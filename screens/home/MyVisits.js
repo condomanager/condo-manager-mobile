@@ -1,28 +1,45 @@
 import React, { Component }       from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
-import ScreenContainer from 'components/ScreenContainer';
+import ScreenContainer   from 'components/ScreenContainer';
+import MainHeader        from 'components/MainHeader';
+import { PrimaryButton } from 'components/Button';
 
-export default class MyProfile extends React.Component {
-  static navigationOptions = {
-    drawerLabel: 'Minhas visitas',
+export default class MyVisits extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state ={ 
+      loading: true,
+      visits:  [],
+    };
+  };
+
+  componentDidMount() {
+    this.setState({
+      loading: false,
+    });
   };
 
   render() {
+    const { loading, visits }  = this.state;
+    const { navigation }       = this.props;
+
     return (
-      <ScreenContainer>
-        <View style={{flex: 1, borderWidth: 4, borderColor: '#F33'}}>
-          <View style={{height: 20, width: '100%', backgroundColor: '#333'}} />
-          <View style={{height: 20, width: '100%', backgroundColor: '#666'}} />
-          <View style={{height: 20, width: '100%', backgroundColor: '#999'}} />
-          <Text>Lista das visitas à minha residência</Text>
+      <ScreenContainer loading={loading} stickyHeaderIndices={[0]}>
+        <MainHeader navigation={navigation} title="Minhas visitas" />
+
+        <View style={styles.container}>
+          <Text>Lista de visitas</Text>
         </View>
-      </ScreenContainer>
+      </ScreenContainer> 
     );
   };
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    padding: 24,
   },
 });
