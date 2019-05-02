@@ -31,7 +31,7 @@ export default class CreateProfileScreen extends React.Component {
     ProfileService.getInstance().create(profile)
     .then(createdProfile => {
       this.setState({ loadingMessage: 'Autenticando, aguarde...'});
-      return AuthenticationService.getInstance().login(profile)
+      return AuthenticationService.getInstance().login({username: profile.cpf, password: profile.password})
       .then((token) => {
         this.setState({ loading: false });
         this.props.navigation.navigate('Home');

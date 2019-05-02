@@ -67,14 +67,16 @@ export default class ProfileService extends EventEmitter {
     console.info('=== ProfileService.create...');
     return HTTPService.getInstance().POST(endpoint, profile)
     .then(responseBody => {
-      if (responseBody.status != 201) {
+      if (responseBody.status) {
+        if (responseBody.message.includes('already registered'))
+          throw 'Já existe um cadastro para este CPF';
         if (responseBody.message.includes('is required'))
           throw 'Preencha todos os campos';
-      } else {
-        console.info('=== ProfileService.create on server, storing locally and on AsyncStorage...');
-        this._changeProfile(responseBody);
-        return AsyncStorage.setItem('profile', JSON.stringify(this._profile));
       }
+      
+      console.info('=== ProfileService.create on server, storing locally and on AsyncStorage...');
+      this._changeProfile(responseBody);
+      return AsyncStorage.setItem('profile', JSON.stringify(this._profile));
     }).then(asyncStorageError => {
       console.info('=== ProfileService.create stored, returning...');
       return new Promise((resolve, reject) => resolve(this._profile));
