@@ -13,8 +13,10 @@ import { FontAwesomeIcon }   from '@fortawesome/react-native-fontawesome';
 import Colors                from 'utils/Colors';
 
 const navigate = (navigation, route) => {
-  navigation.navigate(route);
-  navigation.closeDrawer();
+  if (route && route.trim().length) {
+    navigation.navigate(route);
+    navigation.closeDrawer();
+  }
 };
 
 class MenuGroup extends React.Component {
@@ -57,7 +59,7 @@ export default class Menu extends React.Component {
   profileChangeListener = undefined;
 
   componentDidMount() {
-    ProfileService.getInstance().getProfile().then(profile => this.setState({ profile }));
+    ProfileService.getInstance().get().then(profile => this.setState({ profile }));
 
     this.profileChangeListener = ProfileService.getInstance().addListener('change', profile => this.setState({ profile }));
   };
@@ -96,8 +98,8 @@ export default class Menu extends React.Component {
           </TouchableOpacity>
 
           <MenuGroup title="Visitas">
-            <MenuOption navigation={navigation} currentRoute={currentRoute} route="Whitelist" icon="clipboard-check" label="Autorizações de visita" />
             <MenuOption navigation={navigation} currentRoute={currentRoute} route="MyVisits" icon="clipboard-list" label="Minhas visitas" />
+            <MenuOption navigation={navigation} currentRoute={currentRoute} route="Whitelist" icon="clipboard-check" label="Visitantes autorizados" />
           </MenuGroup>
 
           <MenuGroup title="Configurações">

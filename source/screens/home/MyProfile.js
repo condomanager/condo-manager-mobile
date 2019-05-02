@@ -24,13 +24,13 @@ export default class MyProfile extends React.Component {
     this.state ={ 
       loading: true,
       profile: {
-        phones: [{number: undefined}],
+        phones: [{}],
       },
     };
   };
 
   componentDidMount() {
-    ProfileService.getInstance().getProfile()
+    ProfileService.getInstance().get()
     .then(this.setProfile)
     .catch((error) =>{
       console.error('ERROR:', error);
@@ -39,7 +39,7 @@ export default class MyProfile extends React.Component {
 
   setProfile = (profile) => {
     if (profile && !profile.phones)
-      profile.phones = [{number: undefined}];
+      profile.phones = [{}];
 
     this.setState({
       loading: false,
@@ -57,6 +57,8 @@ export default class MyProfile extends React.Component {
   removePhone = (index) => {
     this.setState(state => {
       state.profile.phones.splice(index, 1);
+      if (!state.profile.phones.length)
+        state.profile.phones.push({});
       return state;
     });
   };
@@ -68,7 +70,7 @@ export default class MyProfile extends React.Component {
       loading: true,
     });
 
-    ProfileService.getInstance().updateProfile(profile)
+    ProfileService.getInstance().update(profile)
     .then(this.setProfile)
     .catch((error) =>{
       console.error('ERROR:', error);

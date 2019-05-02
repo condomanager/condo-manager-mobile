@@ -8,8 +8,8 @@ import InputText             from 'components/InputText';
 import { SecondaryButton }   from 'components/Button';
 import { SecondaryLink }     from 'components/Link';
 
+import ProfileService        from 'services/ProfileService';
 import AuthenticationService from 'services/AuthenticationService';
-import AsyncStorageService from 'services/AsyncStorageService';
 
 export default class CreateProfileScreen extends React.Component {
   constructor(props) {
@@ -28,12 +28,16 @@ export default class CreateProfileScreen extends React.Component {
 
     this.setState({ loading: true, error: undefined, loadingMessage: 'Criando seu novo perfil...' });
 
-    AuthenticationService.login(profile).then((token) => {
-      if (token) {
+    ProfileService.getInstance().create(profile)
+    .then(createdProfile => {
+      this.setState({ loadingMessage: 'Autenticando, aguarde...'});
+      return AuthenticationService.getInstance().login(profile)
+      .then((token) => {
         this.setState({ loading: false });
         this.props.navigation.navigate('Home');
-      }
-    }).catch((error) => {
+      });
+    })
+    .catch((error) => {
       this.setState({ loading: false, error });
     });
   };
@@ -44,7 +48,7 @@ export default class CreateProfileScreen extends React.Component {
     return (
       <ScreenContainer loading={loading} loadingMessage={loadingMessage} contentContainerStyle={styles.container}>
         
-        {error && <Text style={styles.error}>{error.title}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
         <InputText 
           style={styles.inputContainer} 
@@ -67,9 +71,9 @@ export default class CreateProfileScreen extends React.Component {
           maxLength={11} 
           leftIcon="id-card" 
           placeholder="Informe o seu CPF" 
-          value={profile.username}
+          value={profile.cpf}
           onChangeText={(text) => this.setState(state => {
-            state.profile.username = text;
+            state.profile.cpf = text;
             return state;
           })}
         />
@@ -88,7 +92,7 @@ export default class CreateProfileScreen extends React.Component {
           })}
         />
 
-        <SecondaryButton title="Criar meu perfil" onPress={this.attemptAuthentication} />
+        <SecondaryButton title="Criar meu cadastro" onPress={this.attemptAuthentication} />
         <SecondaryLink text="Cancelar" style={styles.link} onPress={() => this.props.navigation.goBack()} />
       </ScreenContainer>
     );

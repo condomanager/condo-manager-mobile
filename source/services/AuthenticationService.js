@@ -22,7 +22,7 @@ export default class AuthenticationService {
     });
   };
 
-  getAuthenticationToken = () => {
+  getToken = () => {
     if (!this._authenticationToken)
       return AsyncStorage.getItem('authenticationToken').then(token => {
         this._authenticationToken = token;
@@ -35,6 +35,11 @@ export default class AuthenticationService {
   login = (credentials) => {
     return HTTPService.getInstance().POST('/login', credentials)
     .then(responseBody => {
+      if (responseBody.status == 400 || responseBody.status == 404)
+        throw 'Usuário ou senha inválidos';
+      if (!responseBody.token)
+        throw 'Ocorreu um problema durante a autenticação';
+
       this._authenticationToken = responseBody.token;
       return AsyncStorage.setItem('authenticationToken', this._authenticationToken);
     }).then(asyncStorageError => {
@@ -43,12 +48,15 @@ export default class AuthenticationService {
   };
   
   logout = () => {
+    const proceedWithLogout = () => {
+      return this.clear()
+      .then(() => ProfileService.getInstance().clear())
+      .then(() => new Promise((resolve, reject) => resolve()));
+    };
+
     return HTTPService.getInstance().PUT('/logout')
-    .then(() => this.clear())
-    .then(() => ProfileService.getInstance().clear())
-    .then(asyncStorageError => {
-      return new Promise((resolve, reject) => resolve());
-    });
+    .then(proceedWithLogout)
+    .catch(proceedWithLogout);
   };
   
 };

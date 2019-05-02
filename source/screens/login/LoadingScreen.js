@@ -12,7 +12,7 @@ export default class LoadingScreen extends React.Component {
   focusHandler = () => {
     console.log('LOADING SCREEN DID FOCUS!');
 
-    AuthenticationService.getInstance().getAuthenticationToken().then(token => {
+    AuthenticationService.getInstance().getToken().then(token => {
       console.log('====== Loading APP, token: ', token);
       if (token)
         this.props.navigation.navigate('Home');

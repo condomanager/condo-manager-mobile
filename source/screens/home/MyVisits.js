@@ -5,7 +5,7 @@ import ScreenContainer   from 'components/ScreenContainer';
 import MainHeader        from 'components/MainHeader';
 import { PrimaryButton } from 'components/Button';
 
-export default class MyWhitelist extends React.Component {
+export default class MyVisits extends React.Component {
   constructor(props){
     super(props);
 
@@ -21,18 +21,16 @@ export default class MyWhitelist extends React.Component {
     });
   };
 
-  addWhitelisted = () => {};
-
   render() {
     const { loading, visits }  = this.state;
     const { navigation }       = this.props;
 
     return (
       <ScreenContainer loading={loading} stickyHeaderIndices={[0]}>
-        <MainHeader navigation={navigation} title="Autorizações de visita" rightIcon="plus-circle" onPressRightIcon={this.addWhitelisted} />
+        <MainHeader navigation={navigation} title="Minhas visitas" />
 
         <View style={styles.container}>
-          <Text>Lista de autorizações de visita</Text>
+          <Text>Montar lista de visitas recebidas, mostrando o visitante e o dia e horário da visita</Text>
         </View>
       </ScreenContainer> 
     );
