@@ -17,7 +17,8 @@ export default class HTTPService {
   };
 
   getRequestConfig = (httpMethod, body) => {
-    return AuthenticationService.getInstance().getToken().then(token => {
+    return AuthenticationService.getInstance().getToken()
+    .then(token => {
       let config = {
         method: httpMethod,
         headers: {
@@ -71,7 +72,7 @@ export default class HTTPService {
     .then(({requestURL, requestConfig}) => this._executeRequest(requestURL, requestConfig));
   };
 
-  DELETE = (endpoint, body) => {
+  DELETE = (endpoint) => {
     return this._prepareRequest('DELETE', endpoint)
     .then(({requestURL, requestConfig}) => this._executeRequest(requestURL, requestConfig));
   };

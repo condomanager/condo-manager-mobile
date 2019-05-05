@@ -9,7 +9,7 @@ import InputText                              from 'components/InputText';
 import { PrimaryButton, SecondaryIconButton } from 'components/Button';
 import { PrimaryLink }                        from 'components/Link';
 
-import ProfileService  from 'services/ProfileService';
+import ProfileService from 'services/ProfileService';
 
 import Colors from 'utils/Colors';
 

@@ -67,11 +67,13 @@ export default class ProfileService extends EventEmitter {
     console.info('=== ProfileService.create...');
     return HTTPService.getInstance().POST(endpoint, profile)
     .then(responseBody => {
-      if (responseBody.status) {
+      if (responseBody.status && responseBody.message) {
         if (responseBody.message.includes('already registered'))
           throw 'Já existe um cadastro para este CPF';
         if (responseBody.message.includes('is required'))
           throw 'Preencha todos os campos';
+
+        throw 'Erro desconhecido: ' + responseBody.message;
       }
       
       console.info('=== ProfileService.create on server, storing locally and on AsyncStorage...');

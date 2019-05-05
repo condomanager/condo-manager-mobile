@@ -35,7 +35,7 @@ export default class MyProfile extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    alignSelf: 'stretch',
     flexDirection: 'row',
     alignItems: 'center',
     height: Header.HEIGHT, 

@@ -1,4 +1,4 @@
-export default class Colors {
+export default class Dates {
 
   static milisInADay = 86400000;
 
@@ -11,12 +11,12 @@ export default class Colors {
   };
 
   static yesterday = () => {
-    let yesterday = getDayBefore(today());
+    let yesterday = this.getDayBefore(this.today());
     return yesterday;
   };
 
   static tomorrow = () => {
-    let tomorrow = getDayAfter(today());
+    let tomorrow = this.getDayAfter(this.today());
     return tomorrow;
   };
 
@@ -35,13 +35,19 @@ export default class Colors {
   static isToday = (date) => {
     let referenceDate = new Date(date.getTime());
     referenceDate.setHours(0,0,0,0);
-    return today().getTime() === referenceDate.getTime();
+    return this.today().getTime() === referenceDate.getTime();
   };
 
   static isTomorrow = (date) => {
     let referenceDate = new Date(date.getTime());
     referenceDate.setHours(0,0,0,0);
-    return tomorrow().getTime() === referenceDate.getTime();
+    return this.tomorrow().getTime() === referenceDate.getTime();
+  };
+
+  static isYesterday = (date) => {
+    let referenceDate = new Date(date.getTime());
+    referenceDate.setHours(0,0,0,0);
+    return this.yesterday().getTime() === referenceDate.getTime();
   };
 
   static getDateString = (date) => {
@@ -50,14 +56,17 @@ export default class Colors {
 
     let dateString;
 
-    if(isToday(date))
+    if(this.isToday(date))
       dateString = 'Hoje';
-    else if(isTomorrow(date))
+    else if(this.isTomorrow(date))
       dateString = 'Amanhã';
-    else
+    else if(this.isYesterday(date))
+      dateString = 'Ontem';
+    else if(this.isThisWeek(date))
       dateString = date.toLocaleString('pt-br', {weekday: 'long'});
+    else
+      dateString = date.toLocaleString('pt-br', {day: 'numeric', month: 'long'});
 
-    dateString += ', ' + date.toLocaleString('pt-br', {day: 'numeric', month: 'long'});
     return dateString.charAt(0).toUpperCase() + dateString.slice(1);
   };
 
@@ -71,7 +80,7 @@ export default class Colors {
     return dateString;
   };
 
-  static getFormattedString = (date, format = 'date') => {
+  static getFormattedString = (date, format = 'datetime') => {
     if(!date)
       return;
 
@@ -112,7 +121,7 @@ export default class Colors {
   };
 
   static getWeekOfTheYear = (date) => {
-    let dayOfTheYear = getDayOfTheYear(date);
+    let dayOfTheYear = this.getDayOfTheYear(date);
     const januaryFirst = new Date(date.getUTCFullYear(), 0, 1);
     const lackingDaysOnFirstWeek = januaryFirst.getUTCDay();
     let weeksSinceJanuaryFirst = Math.ceil((dayOfTheYear + lackingDaysOnFirstWeek) / 7);
@@ -120,21 +129,21 @@ export default class Colors {
   };
 
   static isSameWeek = (date1, date2) => {
-    return date1.getUTCFullYear() === date2.getUTCFullYear() && getWeekOfTheYear(date1) === getWeekOfTheYear(date2);
+    return date1.getUTCFullYear() === date2.getUTCFullYear() && this.getWeekOfTheYear(date1) === this.getWeekOfTheYear(date2);
   };
 
   static isThisWeek = (date) => {
-    return isSameWeek(new Date(), date);
+    return this.isSameWeek(new Date(), date);
   };
 
   static isLastWeek = (date) => {
     const aWeekBehind = getDayBefore(date, 7);
-    return isSameWeek(aWeekBehind, date);
+    return this.isSameWeek(aWeekBehind, date);
   };
 
   static isNextWeek = (date) => {
-    const aWeekAhead = getDayAfter(date, 7);
-    return isSameWeek(aWeekAhead, date);
+    const aWeekAhead = this.getDayAfter(date, 7);
+    return this.isSameWeek(aWeekAhead, date);
   };
 
   static getDaysOnWeek = (date) => {
@@ -146,22 +155,22 @@ export default class Colors {
       previousDay = getDayBefore(previousDay)
     }
 
-    let nextDay = getDayAfter(date);
+    let nextDay = this.getDayAfter(date);
     while(nextDay.getUTCDay() > date.getUTCDay()) {
       days.push(nextDay);
-      nextDay = getDayAfter(nextDay);
+      nextDay = this.getDayAfter(nextDay);
     }
 
     return days.sort((a, b) => a.getTime() - b.getTime());
   };
 
-  static getFirstDayOnWeek = (date) => {  
-    let daysOnWeek = getDaysOnWeek(date);
+  static getFirstDayOnWeek = (date) => {
+    let daysOnWeek = this.getDaysOnWeek(date);
     return daysOnWeek[0];
   };
 
   static getLastDayOnWeek = (date) => {
-    let daysOnWeek = getDaysOnWeek(date);
+    let daysOnWeek = this.getDaysOnWeek(date);
     return daysOnWeek[daysOnWeek.length - 1];
   };
 };
