@@ -2,7 +2,7 @@ export default class Dates {
 
   static milisInADay = 86400000;
 
-  _daylightSavingTimeMilisDiference = (earliestDate, latestDate) => ((latestDate.getTimezoneOffset() - earliestDate.getTimezoneOffset()) * 60 * 1000);
+  static daylightSavingTimeMilisDiference = (earliestDate, latestDate) => ((latestDate.getTimezoneOffset() - earliestDate.getTimezoneOffset()) * 60 * 1000);
 
   static today = () => {
     let today = new Date();
@@ -62,10 +62,10 @@ export default class Dates {
       dateString = 'Amanhã';
     else if(this.isYesterday(date))
       dateString = 'Ontem';
-    else if(this.isThisWeek(date))
-      dateString = date.toLocaleString('pt-br', {weekday: 'long'});
+    else if(this.isBetweenPeriod(date, this.getDayBefore(this.today(), 7), this.today()))
+      dateString = date.toLocaleString('pt-BR', {weekday: 'long'});
     else
-      dateString = date.toLocaleString('pt-br', {day: 'numeric', month: 'long'});
+      dateString = date.toLocaleString('pt-BR', {day: 'numeric', month: 'long'});
 
     return dateString.charAt(0).toUpperCase() + dateString.slice(1);
   };
@@ -76,7 +76,7 @@ export default class Dates {
     let options = weekday ? {weekday: 'long'} : {};
     options = {...options, day: 'numeric', month: 'long', year: 'numeric'}
 
-    let dateString = date.toLocaleString('pt-br', options);
+    let dateString = date.toLocaleString('pt-BR', options);
     return dateString;
   };
 
@@ -88,35 +88,35 @@ export default class Dates {
     const timeOptions = {hour: '2-digit', minute: '2-digit'};
 
     if(format === 'date')
-      return date.toLocaleString('pt-br', dateOptions);
+      return date.toLocaleString('pt-BR', dateOptions);
     if(format === 'time')
-      return date.toLocaleString('pt-br', timeOptions);
+      return date.toLocaleString('pt-BR', timeOptions);
     if(format === 'datetime')
-      return date.toLocaleString('pt-br', {...dateOptions, ...timeOptions});
+      return date.toLocaleString('pt-BR', {...dateOptions, ...timeOptions});
   };
 
   static getPeriodString = (startDate, endDate) => {
     if(!startDate || !endDate)
       return 'Sem período definido';
 
-    let dateString = 'Semana de ' + startDate.toLocaleString('pt-br', {day: 'numeric'}) + ' até ' + endDate.toLocaleString('pt-br', {day: 'numeric', month: 'long'});
-
-    return dateString;
+    const periodString = 'Semana de ' + startDate.toLocaleString('pt-BR', {day: 'numeric'}) + ' até ' + endDate.toLocaleString('pt-BR', {day: 'numeric', month: 'long'});
+    return periodString;
   };
 
   static getTimeString = (date) => {
     if(!date)
       return 'Sem horário definido';
 
-    return date.toLocaleString('pt-br', {hour: '2-digit', minute: '2-digit'});
+    const timeString = date.toLocaleString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    return timeString;
   };
 
   static getDayOfTheYear = (date) => {
     let day = new Date(date.getTime());
     day.setHours(0, 0, 0, 0);
     const januaryFirst = new Date(date.getUTCFullYear(), 0, 1);
-    const daylightSavingTimeDiference = _daylightSavingTimeMilisDiference(januaryFirst, day);  
-    let daysSinceJanuaryFirst = Math.trunc((day.getTime() - daylightSavingTimeDiference - januaryFirst.getTime()) / milisInADay);
+    const daylightSavingTimeDiference = this.daylightSavingTimeMilisDiference(januaryFirst, day);
+    let daysSinceJanuaryFirst = Math.trunc((day.getTime() - daylightSavingTimeDiference - januaryFirst.getTime()) / this.milisInADay);
     return daysSinceJanuaryFirst + 1;
   };
 
@@ -173,4 +173,11 @@ export default class Dates {
     let daysOnWeek = this.getDaysOnWeek(date);
     return daysOnWeek[daysOnWeek.length - 1];
   };
+
+  static isBetweenPeriod = (date, startDate, endDate) => {
+    if(!date || !startDate || !endDate)
+      return false;
+
+    return startDate.getTime() <= date.getTime() && endDate.getTime() >= date.getTime();
+  }; 
 };

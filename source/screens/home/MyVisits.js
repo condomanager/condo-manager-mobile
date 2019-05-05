@@ -60,6 +60,7 @@ export default class MyVisits extends React.Component {
 
         <View style={styles.container}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={visits.sort((visit1, visit2) => visit2.createDate - visit1.createDate)}
             keyExtractor={visit => '' + visit.id}
             renderItem={this.renderVisit}
